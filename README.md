@@ -33,7 +33,7 @@ defmodule MyApp.MixProject do
 end
 ```
 
-Install your package:
+Fetch your new dependency:
 
 ```bash
 mix deps.get
@@ -94,6 +94,8 @@ end
 Each route receives a `conn` variable containing a `Plug.Conn` struct. 
 
 Routes with a trailing slash are different from the ones without:
+
+TODO: not true?
 
 ```elixir
 get "/foo" do
@@ -156,13 +158,63 @@ set :serve_static, false
 
 ## View / Templates
 
-Each template language is exposed via its own rendering method. 
+Each template language is exposed via its own rendering macro. 
 
 ```elixir
 get "/" do
-  eex "index"
+  html_eex :index
 end
 ```
 
-This renders `templates/index.eex`
+This renders `templates/index.html.eex`.
+
+Instead of a template name, you can also just pass in the template content directly:
+
+```elixir
+get "/" do
+  html_eex "<h1><%= Time.utc_now %></h1>"
+end
+```
+
+Templates take a second argument, the options keyword list.
+
+```elixir
+get "/" do
+  html_eex :index, layout: :post
+end
+```
+
+This will render `templates/index.html.eex` embedded in the `templates/post.html.eex` (default is `templates/layout.html.eex`, if it exists).
+
+Any options not understood by Newton will be passed on to the template engine:
+
+```elixir
+get "/" do
+  markdown "Hello<br />World", escape: false
+end
+```
+
+You can also set options per template language in general:
+
+```elixir
+set :markdown, escape: false
+
+get "/" do
+  markdown "Hello<br />World"
+end
+```
+
+Options passed to the render macro override options set via `set`.
+
+### Available Options
+
+TODO
+
+### Accessing Variables in Templates
+
+
+## Helpers
+
+### `text`, `html`, and `json`
+
 

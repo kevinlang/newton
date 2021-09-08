@@ -1,18 +1,57 @@
 defmodule Newton do
-  @moduledoc """
-  Documentation for `Newton`.
-  """
+  @external_resource "README.md"
+  @moduledoc "README.md"
+             |> File.read!()
+            #  |> String.split("<!-- MDOC !-->")
+            #  |> Enum.fetch!(1)
 
-  @doc """
-  Hello world.
+  @doc false
+  defmacro __using__(_opts) do
+    quote do
+      unquote(router())
+      unquote(application())
+    end
+  end
 
-  ## Examples
+  defp router() do
+    quote do
+      use Plug.Router
+      use PlugSocket
 
-      iex> Newton.hello()
-      :world
+      plug :match
+      plug :dispatch
 
-  """
-  def hello do
-    :world
+      def text(conn, content) do
+        conn
+        |> put_resp_content_type("text/html")
+        |> send_resp(200, content)
+      end
+    end
+  end
+
+  defp application() do
+    quote do
+      use Application
+
+      def start(_type, args) do
+        Newton.Supervisor.start_link(__MODULE__, args)
+      end
+
+      @doc """
+      Returns the child specification to start the endpoint
+      under a supervision tree.
+      """
+      def child_spec(opts) do
+        %{
+          id: __MODULE__,
+          start: {__MODULE__, :start_link, [opts]},
+          type: :supervisor
+        }
+      end
+
+      def start_link(opts \\ []) do
+        Newton.Supervisor.start_link(__MODULE__, opts)
+      end
+    end
   end
 end
