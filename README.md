@@ -42,10 +42,10 @@ mix deps.get
 And run with:
 
 ```bash
-mix run --no-halt mix.exs
+mix run --no-halt
 ```
 
-View at: http://localhost:5678
+View at: http://localhost:1642
 
 The code you changed will not take effect until you restart the server. Please restart the server every time you change or use [`newton_reload`](https://github.com/kevinlang/newton_reload).
 

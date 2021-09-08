@@ -28,6 +28,7 @@ defmodule Newton.Supervisor do
     if server?() do
       [
         {Plug.Cowboy,
+        port: 1642,
         scheme: :http,
         plug: mod,
         options: [
@@ -52,7 +53,7 @@ defmodule Newton.Supervisor do
   defp log_access_url() do
     if server?() do
       # obviously the url should be configurable!
-      Logger.info("Server started at http://localhost:4000")
+      Logger.info("Server started at http://localhost:1642")
     end
   end
 
