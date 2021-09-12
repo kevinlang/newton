@@ -13,7 +13,7 @@ defmodule MyApp do
 end
 ```
 
-Install the Hex package by adding it to your deps, and specify your application module:
+Install the Hex package by adding it to your deps, and specify your application `mod`:
 
 ```elixir
 # mix.exs
@@ -53,7 +53,7 @@ The code you changed will not take effect until you restart the server. Please r
 
 In addition to being started as an application directly, your Newton server can also be started under your application's supervision tree.
 
-Simply update your `MyApp.Application` to include it:
+Simply update your `MyApp.Application` to include the relevant module:
 
 ```elixir
 children = [
@@ -93,16 +93,6 @@ end
 
 Each route receives a `conn` variable containing a `Plug.Conn` struct. 
 
-Routes with a trailing slash are different from the ones without:
-
-TODO: not true?
-
-```elixir
-get "/foo" do
-  # Does not match "GET /foo/"
-end
-```
-
 Route patterns may include named parameters which will be available in the function body:
 
 ```elixir
@@ -115,7 +105,7 @@ You can also access named parameters via `conn.params` and `conn.path_params`:
 
 ```elixir
 get "/law-of-identity/:value" do
-  text(conn, "#{conn.params[:name]} == #{conn.path_params[:name]}")
+  text(conn, "#{conn.params["name"]} == #{conn.path_params["name"]}")
 end
 ```
 
@@ -127,16 +117,19 @@ get "/hello/*glob" do
 end
 ```
 
-TODO: param handling
+Route patterns may also utilize query parameters:
 
-TODO: passing function instead of block
+```elixir
+get "/posts" do
+  # matches "GET /posts?title=foo&author=bar"
+  
+  # access via conn.params
+  title = conn.params["title"]
 
-TODO: passing module/atom pair instead of block
-
-
-## Conditions
-
-
+  # also can access via conn.query_params
+  author = conn.query_params["author"]
+end
+```
 
 ## Static Files
 
@@ -158,63 +151,25 @@ set :serve_static, false
 
 ## View / Templates
 
-Each template language is exposed via its own rendering macro. 
+You can render a template with `render`:
 
 ```elixir
 get "/" do
-  html_eex :index
+  render(conn, "index.html")
 end
 ```
 
 This renders `templates/index.html.eex`.
 
-Instead of a template name, you can also just pass in the template content directly:
-
-```elixir
-get "/" do
-  html_eex "<h1><%= Time.utc_now %></h1>"
-end
-```
-
 Templates take a second argument, the options keyword list.
 
 ```elixir
 get "/" do
-  html_eex :index, layout: :post
+  render(conn, "index.html", layout: :post)
 end
 ```
 
 This will render `templates/index.html.eex` embedded in the `templates/post.html.eex` (default is `templates/layout.html.eex`, if it exists).
 
-Any options not understood by Newton will be passed on to the template engine:
-
-```elixir
-get "/" do
-  markdown "Hello<br />World", escape: false
-end
-```
-
-You can also set options per template language in general:
-
-```elixir
-set :markdown, escape: false
-
-get "/" do
-  markdown "Hello<br />World"
-end
-```
-
-Options passed to the render macro override options set via `set`.
-
-### Available Options
-
-TODO
-
-### Accessing Variables in Templates
-
-
-## Helpers
-
-### `text`, `html`, and `json`
 
 

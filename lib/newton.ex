@@ -17,15 +17,10 @@ defmodule Newton do
     quote do
       use Plug.Router
       use PlugSocket
+      import Newton.Helpers
 
       plug :match
       plug :dispatch
-
-      def text(conn, content) do
-        conn
-        |> put_resp_content_type("text/html")
-        |> send_resp(200, content)
-      end
     end
   end
 

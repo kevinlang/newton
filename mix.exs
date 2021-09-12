@@ -23,7 +23,10 @@ defmodule Newton.MixProject do
     [
       {:plug, "~> 1.12"},
       {:plug_socket, "~> 0.1.0"},
-      {:plug_cowboy, "~> 2.5"}
+      {:plug_cowboy, "~> 2.5"},
+
+      # consider making optional
+      {:jason, "~> 1.0"}
     ]
   end
 end
