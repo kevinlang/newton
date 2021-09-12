@@ -8,10 +8,34 @@ defmodule Newton do
   @doc false
   defmacro __using__(_opts) do
     quote do
+      # unquote(templates())
       unquote(router())
       unquote(application())
     end
   end
+
+  # defp templates() do
+  #   quote do
+  #     require EEx
+
+  #     paths = Path.wildcard("templates/**/*.eex")
+
+  #     for path <- paths do
+  #       second_param = path
+  #         |> String.trim_leading("templates/")
+  #         |> String.trim_trailing(".eex")
+
+  #       EEx.function_from_file(:defp, :render, path, [:conn])
+
+  #       @external_resource Path.relative_to_cwd(path)
+  #     end
+
+  #     # def __mix_recompile__? do
+  #     #   Path.wildcard("templates/**/*.eex") |> Enum.sort() |> :erlang.md5() !=
+  #     #     unquote(:erlang.md5(paths))
+  #     # end
+  #   end
+  # end
 
   defp router() do
     quote do
